@@ -1,5 +1,5 @@
 import sqlite3
-from helper import helper
+import helper
 
 class DataBase(sqlite3.Connection):
     def __init__(self,*args, **kwargs):
@@ -39,5 +39,6 @@ class DataBase(sqlite3.Connection):
 
     @helper.database._get_statement(helper.database._get_latest_date_statement)
     def get_latest_date(self, table:str,statement:str=None) -> str:
-        return self.Cursor.execute(statement).fetchall()[0]["max_date"]
+        max_date_str = self.Cursor.execute(statement).fetchall()[0]["max_date"]
+        return helper.datetime.string_to_datetime(max_date_str).date()
         

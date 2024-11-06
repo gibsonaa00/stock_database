@@ -36,6 +36,9 @@ class yahoo_finance:
 
     def __call__(self,stock:str, start_date:datetime=None, end_date:datetime=None, method:ScrapeMethod=ScrapeMethod.ALL) -> bool:
         self.method = method
+
+        if not self.db.check(table=stock):
+            self.db.create(table=stock, columns = helper.enum.to_dict(Columns))
         self.request_info = request_response(symbol=stock)
         self.response_info = request_response(symbol=stock)   
 

@@ -1,7 +1,9 @@
 from datetime import datetime as dt, timedelta
-from typing import Callable,Enum
+from typing import Callable
 import calendar
 from declared_enums import Columns
+from enum import Enum, auto
+
 
 class datetime:
     @staticmethod
@@ -73,6 +75,19 @@ class datetime:
             12: "December"
         }
         return months.get(num)
+    
+
+    @staticmethod
+    def string_to_datetime(date_string, date_format="%Y-%m-%d %H:%M:%S"): 
+        """ Convert a string to a datetime object. 
+        :param date_string: The string representing the date and time. 
+        :param date_format: The format of the date string. Default is "%Y-%m-%d %H:%M:%S". 
+        :return: A datetime object. """ 
+        try: 
+            return dt.strptime(date_string, date_format) 
+        except ValueError as e: 
+            print(f"Error: {e}") 
+            return None
 
 
 class dictionary:
@@ -166,7 +181,7 @@ class database:
 
     @staticmethod
     def _log_create(table:str, columns:dict[str,object]):
-        return f"INSERT INTO logs ('name','created_at', 'updated_at') VALUES ('{table}','{datetime.get_today_date().date()}','{helper.datetime.get_today_date().date()}')"
+        return f"INSERT INTO logs ('name','created_at', 'updated_at') VALUES ('{table}','{datetime.get_today_date().date()}','{datetime.get_today_date().date()}')"
 
     @staticmethod
     def _log_update(table:str):
