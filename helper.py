@@ -2,7 +2,7 @@ from datetime import datetime as dt, timedelta
 from typing import Callable
 import calendar
 from declared_enums import Columns
-from enum import Enum, auto
+from enum import Enum
 
 
 class datetime:
@@ -212,4 +212,3 @@ class yfinance:
             trimmed_response[pair.value[0]] = response[pair.value[0]]
         return trimmed_response
             
-
