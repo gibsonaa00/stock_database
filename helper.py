@@ -4,6 +4,10 @@ import calendar
 from declared_enums import Columns
 from enum import Enum
 
+#Encryption
+import base64
+from cryptography.fernet import Fernet
+import string
 
 class datetime:
     @staticmethod
@@ -116,6 +120,16 @@ class enum:
     def to_dict(e:Enum):
         return {i.value[0]:i.value[1] for i in e}
     
+class string:
+    @staticmethod
+    def _remove_special(func:Callable):
+        def inner(*args,table,**kwargs) -> None:
+                        
+            alphabetical_message = ''.join(filter(str.isalpha, table))
+            return func(*args,table=alphabetical_message,**kwargs)
+        return inner
+
+
 
 class database:
     @staticmethod
@@ -128,12 +142,14 @@ class database:
 
 
     @staticmethod
+    @string._remove_special
     def _get_create_statement(table:str, columns:dict[str,str]):
         return f"CREATE TABLE IF NOT EXISTS {table} (" \
                             + ",".join([f"'{col_name}' {types}" for col_name,types in columns.items()])\
                             + ")"
 
     @staticmethod
+    @string._remove_special
     def _get_insert_statement(table:str, data:dict[str,object]):
         return (f"INSERT INTO {table} (" \
                             + ",".join([f"'{col_name}'" for col_name in data.keys()])\
@@ -143,21 +159,25 @@ class database:
 
 
     @staticmethod
+    @string._remove_special
     def _get_delete_statement(table:str) -> str:
         return f"DROP TABLE IF EXISTS {table}"
 
 
     @staticmethod
+    @string._remove_special
     def _get_get_statement(table:str) -> str:
         return f"SELECT * FROM {table}"
 
 
     @staticmethod
+    @string._remove_special
     def _get_check_statement(table:str) -> str:
         return f"SELECT name FROM sqlite_master WHERE name = '{table}'"
 
     
     @staticmethod
+    @string._remove_special
     def _get_latest_date_statement(table:str) -> str:
         return f"SELECT MAX(date) AS max_date FROM {table}"
 
@@ -175,15 +195,18 @@ class database:
 
 
     @staticmethod
+    @string._remove_special
     def _log_delete(table:str):
         return f"UPDATE logs SET updated_at = '{datetime.get_today_date().date()}', deleted_at = '{datetime.get_today_date().date()}'  WHERE name = '{table}'; "
 
 
     @staticmethod
+    @string._remove_special
     def _log_create(table:str, columns:dict[str,object]):
         return f"INSERT INTO logs ('name','created_at', 'updated_at') VALUES ('{table}','{datetime.get_today_date().date()}','{datetime.get_today_date().date()}')"
 
     @staticmethod
+    @string._remove_special
     def _log_update(table:str):
         return f"UPDATE logs SET updated_at = '{datetime.get_today_date().date()}' WHERE name = '{table}'; "
 

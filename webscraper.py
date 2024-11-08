@@ -3,6 +3,7 @@ import requests
 import helper
 from declared_enums import Columns, ScrapeMethod
 from database import DataBase
+from config import *
 
 class request_response:
     def __init__(self,symbol:str, start_date:datetime=None, end_date:datetime=None) -> None:
@@ -31,7 +32,7 @@ class yahoo_finance:
         self.db = database
         self.db_symbol = db_symbol
         
-        self.user_agent={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:129.0) Gecko/20100101 Firefox/129.0'}
+        self.user_agent= USER_AGENT
         
 
     def __call__(self,stock:str, start_date:datetime=None, end_date:datetime=None, method:ScrapeMethod=ScrapeMethod.ALL) -> bool:
