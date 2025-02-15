@@ -2,24 +2,11 @@
 #include <string>
 #include <curl/curl.h>
 #include <fstream>
+#include <iostream>
+#include "settings.hpp"
+#include <nlohmann/json.hpp>
 
-
-class request {
-    public:
-        std::string reqURLTemplate;
-        std::string ticker;
-        std::string host;
-        std::string userAgent;
-        std::string accept;
-        std::string acceptLanguage;
-
-        request(std::string rUT, std::string tick){
-            reqURLTemplate = rUT;
-            ticker = tick;
-
-        }
-
-};
+using json = nlohmann::json;
 
 int main(int argc, char **argv){
 
@@ -29,6 +16,8 @@ int main(int argc, char **argv){
     CURL *curl;
     CURLcode res;
     struct curl_slist *headers = nullptr;
+    std::string concatString;
+    
     //string url = argv[1];
 
     
@@ -38,7 +27,13 @@ int main(int argc, char **argv){
 
         curl_easy_setopt(curl, CURLOPT_URL,argv[1]);
 
-        headers = curl_slist_append(headers, "Host: query1.finance.yahoo.com");
+        for (const auto &pair: yfinanceHeaders){
+            concatString = pair.first + ":" + pair.second;
+
+            headers = curl_slist_append(headers, concatString.c_str()) ;
+
+        }
+
        
 
         // Set the headers
@@ -48,8 +43,14 @@ int main(int argc, char **argv){
         res = curl_easy_perform(curl);
         // Error handling
         if (res!= CURLE_OK){
-            fprintf(stderr, "Request failed: %s\n", curl_easy_strerror(res));
+            
         }
+        std::string results = std::string(curl_easy_strerror(res));
+
+        //json data = json::parse(results);
+        //std::cout << "\n\n:" << data.is_object() << std::endl;
+        std::cout  << res << std::endl;
+
         curl_easy_cleanup(curl);
         curl_global_cleanup();
 
